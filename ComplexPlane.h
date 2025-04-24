@@ -34,7 +34,7 @@ private:
 
     ComplexPlane(int pixelWidth, int pixelHeight);
 
-    void draw(RenderTarget& target, RenderStates states);
+    void draw(RenderTarget& target, RenderStates states) const;
 
     void updateRender();
 
