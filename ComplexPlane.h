@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <cstdint>
+#include <complex>
 
 using namespace std;
 using namespace sf;
@@ -19,7 +20,7 @@ enum class State
     DISPLAYING
 };
 
-class ComplexPlane
+class ComplexPlane : public sf::Drawable
 {
 private:
     VertexArray m_vArray;
