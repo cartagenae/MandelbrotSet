@@ -5,6 +5,7 @@
 #include <vector>
 #include <cstdint>
 #include "ComplexPlane.h"
+#include <complex>
 
 using namespace std;
 using namespace sf;
