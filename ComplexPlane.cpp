@@ -12,12 +12,20 @@ using namespace sf;
 
 ComplexPlane::ComplexPlane(int pixelWidth, int pixelHeight)
 {
-    
+    m_vArray.setPrimitiveType(Points);
+    m_vArray.resize(pixelWidth * pixelHeight);
+    m_state = State::CALCULATING;
+    Vector2f m_mouseLocation = {0.f, 0.f};
+    Vector2i m_pixel_size = {pixelWidth, pixelHeight};
+    Vector2f m_plane_center = {0, 0};
+    Vector2f m_plane_size = {BASE_WIDTH, BASE_HEIGHT * m_aspectRatio};
+    m_zoom_count = 0;
+    float m_aspectRatio = static_cast<float>(pixelHeight) / static_cast<float>(pixelWidth);
 }
 
-void ComplexPlane::draw(RenderTarget& target, RenderStates states)
+void ComplexPlane::draw(RenderTarget& target, RenderStates states) const
 {
-
+    target.draw(m_vArray);
 }
 
 void ComplexPlane::updateRender()
