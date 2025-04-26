@@ -5,6 +5,7 @@
 #include <vector>
 #include "ComplexPlane.h"
 #include <complex>
+#include <cmath>
 
 using namespace std;
 using namespace sf;
@@ -15,9 +16,9 @@ ComplexPlane::ComplexPlane(int pixelWidth, int pixelHeight)
     m_vArray.resize(pixelWidth * pixelHeight);
     m_state = State::CALCULATING;
     Vector2f m_mouseLocation = {0.f, 0.f};
-    Vector2i m_pixel_size = {pixelWidth, pixelHeight};
+    Vector2i m_pixel_size = { pixelWidth, pixelHeight };
     Vector2f m_plane_center = {0, 0};
-    Vector2f m_plane_size = {BASE_WIDTH, BASE_HEIGHT * m_aspectRatio};
+    Vector2f m_plane_size = { BASE_WIDTH, BASE_HEIGHT * m_aspectRatio };
     m_zoom_count = 0;
     float m_aspectRatio = static_cast<float>(pixelHeight) / static_cast<float>(pixelWidth);
 }
@@ -29,50 +30,196 @@ void ComplexPlane::draw(RenderTarget& target, RenderStates states) const
 
 void ComplexPlane::updateRender()
 {
-    
+    if(m_state == State::CALCULATING)
+    {
+        for(int j = 0; j < m_pixel_size.x; j++)
+        {
+            for(int i = 0; i < m_pixel_size.y; i++)
+            {
+                m_vArray[j + i * m_pixel_size.x].position = { (float)j, (float)i };
+                ComplexPlane::mapPixelToCoords(m_pixel_size);
+                size_t numIterations = ComplexPlane::countIterations(m_plane_size);
+                Uint8 r, g, b;
+                ComplexPlane::iterationsToRGB(numIterations, r, g, b);
+                m_vArray[j + i * m_pixel_size.x].color = { r,g,b };
+            }
+        }
+        m_state = State::DISPLAYING;
+    }
 }
 
 void ComplexPlane::zoomIn()
 {
+    m_zoom_count++;
+    
+    float xSize = BASE_WIDTH * pow(BASE_ZOOM, m_zoom_count);
+    float ySize = BASE_HEIGHT * m_aspectRatio * pow(BASE_ZOOM, m_zoom_count);
 
+    m_plane_size = { xSize, ySize };
+
+    m_state = State::CALCULATING;
 }
 
 void ComplexPlane::zoomOut()
 {
+    m_zoom_count--;
+    
+    float xSize = BASE_WIDTH * pow(BASE_ZOOM, m_zoom_count);
+    float ySize = BASE_HEIGHT * m_aspectRatio * pow(BASE_ZOOM, m_zoom_count);
 
+    m_plane_size = { xSize, ySize };
+
+    m_state = State::CALCULATING;
 }
 
 void ComplexPlane::setCenter(Vector2i mousePixel)
 {
-
+    m_plane_center = ComplexPlane::mapPixelToCoords(mousePixel);
+    m_state = State::CALCULATING;
 }
 
 void ComplexPlane::setMouseLocation(Vector2i mousePixel)
 {
-
+    m_mouseLocation = ComplexPlane::mapPixelToCoords(mousePixel);
 }
 
 void ComplexPlane::loadText(Text& text)
 {
+    stringstream ss;
 
+    ss << "Cursor: (" << m_mouseLocation.x << ", " << m_mouseLocation.y << ")\n";
+    ss << "Center: (" << m_plane_center.x << ", " << m_plane_center.y << ")\n";
+
+    text.setString(ss.str());
 }
 
 size_t ComplexPlane::countIterations(Vector2f coord)
 {
-    return 0;
+    size_t iterations;
+    for(int x = 0; x < coord.x; x++)
+    {
+        for(int y = 0; x < coord.y; y++)
+        {
+            iterations++;
+        }
+    }
+
+    return iterations;
 }
 
 void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
 {
+    // for(size_t i = 0; i < count; i++)
+    // {
+    //     if(i < 51)
+    //     {
+    //         // iteration less than 51
+    //         // hex: #0d0630
+    //         r = 13;
+    //         g = 6;
+    //         b = 48;
+    //     }
+    //     else if(i >= 51 && i < 102)
+    //     {
+    //         // iteration between 51 inclusive and 102 non-inclusive
+    //         // hex: #18314f
+    //         r = 24;
+    //         g = 49;
+    //         b = 79;
+    //     }
+    //     else if(i >= 102 && i < 153)
+    //     {
+    //         // iteration between 102 inclusive and 153 non-inclusive
+    //         // hex: #384e77
+    //         r = 56;
+    //         g = 78;
+    //         b = 119;
+    //     }
+    //     else if(i >= 153 && i < 204)
+    //     {
+    //         // iteration between 153 inclusive and 204 non-inclusive
+    //         // hex: #8bbeb2
+    //         r = 139;
+    //         g = 190;
+    //         b = 178;
+    //     }
+    //     else if(i >= 204 && i < 255)
+    //     {
+    //         // iteration between 204 inclusive and 255 non-inclusive
+    //         // hex: #e6f9af
+    //         r = 230;
+    //         g = 249;
+    //         b = 175;
+    //     }
+    //     else
+    //     {
+    //         // iteration 255 inclusive and above
+    //         // hex: #000000
+    //         r = 0;
+    //         g = 0;
+    //         b = 0;
+    //     }
+    // }
 
+    if(count < 51)
+    {
+        // iteration less than 51
+        // hex: #0d0630
+        r = 13;
+        g = 6;
+        b = 48;
+    }
+    else if(count >= 51 && count < 102)
+    {
+        // iteration between 51 inclusive and 102 non-inclusive
+        // hex: #18314f
+        r = 24;
+        g = 49;
+        b = 79;
+    }
+    else if(count >= 102 && count < 153)
+    {
+        // iteration between 102 inclusive and 153 non-inclusive
+        // hex: #384e77
+        r = 56;
+        g = 78;
+        b = 119;
+    }
+    else if(count >= 153 && count < 204)
+    {
+        // iteration between 153 inclusive and 204 non-inclusive
+        // hex: #8bbeb2
+        r = 139;
+        g = 190;
+        b = 178;
+    }
+    else if(count >= 204 && count < 255)
+    {
+        // iteration between 204 inclusive and 255 non-inclusive
+        // hex: #e6f9af
+        r = 230;
+        g = 249;
+        b = 175;
+    }
+    else
+    {
+        // iteration 255 inclusive and above
+        // hex: #000000
+        r = 0;
+        g = 0;
+        b = 0;
+    }
 }
 
 Vector2f ComplexPlane::mapPixelToCoords(Vector2i mousePixel)
 {
-    Vector2f mouseVector;
-    
-    mouseVector.x = 0;
-    mouseVector.y = 0;
+    Vector2f coords;
 
-    return mouseVector;
+    float minX = m_plane_center.x - m_plane_size.x / 2.0f;
+    float minY = m_plane_center.y - m_plane_size.y / 2.0f;
+
+    coords.x = (static_cast<float>(mousePixel.x) / m_pixel_size.x) * m_plane_size.x + minX;
+    coords.y = (static_cast<float>(mousePixel.y) / m_pixel_size.y) * m_plane_size.y + minY;
+    
+    return coords;
 }
