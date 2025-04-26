@@ -3,7 +3,6 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <cstdint>
 #include "ComplexPlane.h"
 #include <complex>
 
@@ -63,7 +62,7 @@ size_t ComplexPlane::countIterations(Vector2f coord)
     return 0;
 }
 
-void ComplexPlane::iterationsToRGB(size_t count, uint8_t& r, uint8_t& g, uint8_t& b)
+void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
 {
 
 }

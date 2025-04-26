@@ -3,7 +3,6 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <cstdint>
 #include <complex>
 
 using namespace std;
@@ -50,7 +49,7 @@ private:
 
     size_t countIterations(Vector2f coord);
 
-    void iterationsToRGB(size_t count, uint8_t& r, uint8_t& g, uint8_t& b);
+    void iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b);
 
     Vector2f mapPixelToCoords(Vector2i mousePixel);
 };
