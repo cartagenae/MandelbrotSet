@@ -30,7 +30,8 @@ private:
     Vector2f m_plane_size;
     int m_zoom_count;
     float m_aspectRatio;
-
+    
+public:
     ComplexPlane(int pixelWidth, int pixelHeight);
 
     void draw(RenderTarget& target, RenderStates states) const;

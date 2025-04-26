@@ -15,12 +15,12 @@ ComplexPlane::ComplexPlane(int pixelWidth, int pixelHeight)
     m_vArray.setPrimitiveType(Points);
     m_vArray.resize(pixelWidth * pixelHeight);
     m_state = State::CALCULATING;
-    Vector2f m_mouseLocation = {0.f, 0.f};
-    Vector2i m_pixel_size = { pixelWidth, pixelHeight };
-    Vector2f m_plane_center = {0, 0};
-    Vector2f m_plane_size = { BASE_WIDTH, BASE_HEIGHT * m_aspectRatio };
+    m_mouseLocation = {0.f, 0.f};
+    m_pixel_size = { pixelWidth, pixelHeight };
+    m_plane_center = {0, 0};
+    m_plane_size = { BASE_WIDTH, BASE_HEIGHT * m_aspectRatio };
     m_zoom_count = 0;
-    float m_aspectRatio = static_cast<float>(pixelHeight) / static_cast<float>(pixelWidth);
+    m_aspectRatio = static_cast<float>(pixelHeight) / static_cast<float>(pixelWidth);
 }
 
 void ComplexPlane::draw(RenderTarget& target, RenderStates states) const
@@ -37,8 +37,8 @@ void ComplexPlane::updateRender()
             for(int i = 0; i < m_pixel_size.y; i++)
             {
                 m_vArray[j + i * m_pixel_size.x].position = { (float)j, (float)i };
-                ComplexPlane::mapPixelToCoords(m_pixel_size);
-                size_t numIterations = ComplexPlane::countIterations(m_plane_size);
+                Vector2f coord = ComplexPlane::mapPixelToCoords({ j, i });
+                size_t numIterations = ComplexPlane::countIterations(coord);
                 Uint8 r, g, b;
                 ComplexPlane::iterationsToRGB(numIterations, r, g, b);
                 m_vArray[j + i * m_pixel_size.x].color = { r,g,b };
@@ -87,21 +87,55 @@ void ComplexPlane::loadText(Text& text)
 {
     stringstream ss;
 
+    ss << "Mandelbrot Set\n";
     ss << "Cursor: (" << m_mouseLocation.x << ", " << m_mouseLocation.y << ")\n";
     ss << "Center: (" << m_plane_center.x << ", " << m_plane_center.y << ")\n";
+    ss << "Left-click to Zoom in\n";
+    ss << "Right-click to Zoom out\n";
 
     text.setString(ss.str());
 }
 
+// size_t ComplexPlane::countIterations(Vector2f coord)
+// {
+//     // size_t iterations;
+//     // for(int x = 0; x < coord.x; x++)
+//     // {
+//     //     for(int y = 0; x < coord.y; y++)
+//     //     {
+//     //         iterations++;
+//     //     }
+//     // }
+
+//     // return iterations;
+
+//     complex<float> z = 0;
+//     complex<float> c(coord.x, coord.y);
+
+//     size_t iterations = 0;
+//     while(abs(z) < 2 && iterations < MAX_ITER)
+//     {
+//         z = z * z + c;
+//         iterations++;
+//     }
+
+//     return iterations;
+// }
+
 size_t ComplexPlane::countIterations(Vector2f coord)
 {
-    size_t iterations;
-    for(int x = 0; x < coord.x; x++)
+    // c = x + yi in the complex plane
+    complex<float> c(coord.x, coord.y);
+
+    // Start with z = 0
+    complex<float> z = 0;
+
+    // Count how many iterations it takes for |z| to exceed 2
+    size_t iterations = 0;
+    while (abs(z) < 2.0f && iterations < MAX_ITER)
     {
-        for(int y = 0; x < coord.y; y++)
-        {
-            iterations++;
-        }
+        z = z * z + c;
+        iterations++;
     }
 
     return iterations;
@@ -161,7 +195,15 @@ void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
     //     }
     // }
 
-    if(count < 51)
+    if(count == MAX_ITER)
+    {
+        // iteration 255 inclusive and above
+        // hex: #000000
+        r = 0;
+        g = 0;
+        b = 0;
+    }
+    else if(count < 51)
     {
         // iteration less than 51
         // hex: #0d0630
@@ -169,7 +211,7 @@ void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
         g = 6;
         b = 48;
     }
-    else if(count >= 51 && count < 102)
+    else if(count < 102)
     {
         // iteration between 51 inclusive and 102 non-inclusive
         // hex: #18314f
@@ -177,7 +219,7 @@ void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
         g = 49;
         b = 79;
     }
-    else if(count >= 102 && count < 153)
+    else if(count < 153)
     {
         // iteration between 102 inclusive and 153 non-inclusive
         // hex: #384e77
@@ -185,7 +227,7 @@ void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
         g = 78;
         b = 119;
     }
-    else if(count >= 153 && count < 204)
+    else if(count < 204)
     {
         // iteration between 153 inclusive and 204 non-inclusive
         // hex: #8bbeb2
@@ -193,21 +235,13 @@ void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
         g = 190;
         b = 178;
     }
-    else if(count >= 204 && count < 255)
+    else
     {
         // iteration between 204 inclusive and 255 non-inclusive
         // hex: #e6f9af
         r = 230;
         g = 249;
         b = 175;
-    }
-    else
-    {
-        // iteration 255 inclusive and above
-        // hex: #000000
-        r = 0;
-        g = 0;
-        b = 0;
     }
 }
 
