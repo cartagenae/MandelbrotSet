@@ -143,49 +143,12 @@ size_t ComplexPlane::countIterations(Vector2f coord)
 
 void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
 {
+    // We're doing 8 colors since 8 x 8 = 64 and NUM_ITERATIONS = 64
+
+    // size_t regionSize = MAX_ITER / 8;
     // for(size_t i = 0; i < count; i++)
     // {
-    //     if(i < 51)
-    //     {
-    //         // iteration less than 51
-    //         // hex: #0d0630
-    //         r = 13;
-    //         g = 6;
-    //         b = 48;
-    //     }
-    //     else if(i >= 51 && i < 102)
-    //     {
-    //         // iteration between 51 inclusive and 102 non-inclusive
-    //         // hex: #18314f
-    //         r = 24;
-    //         g = 49;
-    //         b = 79;
-    //     }
-    //     else if(i >= 102 && i < 153)
-    //     {
-    //         // iteration between 102 inclusive and 153 non-inclusive
-    //         // hex: #384e77
-    //         r = 56;
-    //         g = 78;
-    //         b = 119;
-    //     }
-    //     else if(i >= 153 && i < 204)
-    //     {
-    //         // iteration between 153 inclusive and 204 non-inclusive
-    //         // hex: #8bbeb2
-    //         r = 139;
-    //         g = 190;
-    //         b = 178;
-    //     }
-    //     else if(i >= 204 && i < 255)
-    //     {
-    //         // iteration between 204 inclusive and 255 non-inclusive
-    //         // hex: #e6f9af
-    //         r = 230;
-    //         g = 249;
-    //         b = 175;
-    //     }
-    //     else
+    //     if(count >= MAX_ITER)
     //     {
     //         // iteration 255 inclusive and above
     //         // hex: #000000
@@ -193,13 +156,87 @@ void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
     //         g = 0;
     //         b = 0;
     //     }
+    //     else if(count < regionSize)
+    //     {
+    //         // iteration less than 9
+    //         // hex: #0d0630
+    //         r = 13;
+    //         g = 6;
+    //         b = 48;
+
+    //         // hex: #62466B
+    //         // r = 98;
+    //         // g = 70;
+    //         // b = 107;
+    //     }
+    //     else if(count < 2 * regionSize)
+    //     {
+    //         // iteration between 8 inclusive and 16 non-inclusive
+    //         // hex: #18314f
+    //         r = 24;
+    //         g = 49;
+    //         b = 79;
+
+    //         // hex: #FCA17D
+    //         // r = 252;
+    //         // g = 162;
+    //         // b = 125;
+    //     }
+    //     else if(count < 3 * regionSize)
+    //     {
+    //         // iteration between 16 inclusive and 24 non-inclusive
+    //         // hex: #384e77
+    //         r = 56;
+    //         g = 78;
+    //         b = 119;
+    //     }
+    //     else if(count < 4 * regionSize)
+    //     {
+    //         // iteration between 24 inclusive and 32 non-inclusive
+    //         // hex: #8bbeb2
+    //         r = 139;
+    //         g = 190;
+    //         b = 178;
+    //     }
+    //     else if(count < 5 * regionSize)
+    //     {
+    //         // iteration between 32 inclusive and 40 non-inclusive
+    //         // hex: #e6f9af
+    //         r = 230;
+    //         g = 249;
+    //         b = 175;
+    //     }
+    //     else if(count < 6 * regionSize)
+    //     {
+    //         // iteration between 40 inclusive and 48 non-inclusive
+    //         // hex: #dc493a
+    //         r = 220;
+    //         g = 73;
+    //         b = 58;
+    //     }
+    //     else if(count < 7 * regionSize)
+    //     {
+    //         // iteration between 48 inclusive and 56 non-inclusive
+    //         // hex: #62466B
+    //         r = 98;
+    //         g = 70;
+    //         b = 107;
+    //     }
+    //     else
+    //     {
+    //         // iteration between 56 inclusive and 64 non-inclusive
+    //         // hex: #FCA17D
+    //         r = 252;
+    //         g = 162;
+    //         b = 125;
+    //     }
     // }
 
-    size_t regionSize = MAX_ITER / 5;
+    size_t regionSize = MAX_ITER / 8;
 
     if(count >= MAX_ITER)
     {
-        // iteration 255 inclusive and above
+        // iteration 64 inclusive and above
         // hex: #000000
         r = 0;
         g = 0;
@@ -207,33 +244,23 @@ void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
     }
     else if(count < regionSize)
     {
-        // iteration less than 51
+        // iteration less than 8
         // hex: #0d0630
         r = 13;
         g = 6;
         b = 48;
-
-        // hex: #62466B
-        // r = 98;
-        // g = 70;
-        // b = 107;
     }
     else if(count < 2 * regionSize)
     {
-        // iteration between 51 inclusive and 102 non-inclusive
+        // iteration between 8 inclusive and 16 non-inclusive
         // hex: #18314f
         r = 24;
         g = 49;
         b = 79;
-
-        // hex: #FCA17D
-        // r = 252;
-        // g = 162;
-        // b = 125;
     }
     else if(count < 3 * regionSize)
     {
-        // iteration between 102 inclusive and 153 non-inclusive
+        // iteration between 16 inclusive and 24 non-inclusive
         // hex: #384e77
         r = 56;
         g = 78;
@@ -241,19 +268,43 @@ void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
     }
     else if(count < 4 * regionSize)
     {
-        // iteration between 153 inclusive and 204 non-inclusive
+        // iteration between 24 inclusive and 32 non-inclusive
         // hex: #8bbeb2
         r = 139;
         g = 190;
         b = 178;
     }
-    else
+    else if(count < 5 * regionSize)
     {
-        // iteration between 204 inclusive and 255 non-inclusive
+        // iteration between 32 inclusive and 40 non-inclusive
         // hex: #e6f9af
         r = 230;
         g = 249;
         b = 175;
+    }
+    else if(count < 6 * regionSize)
+    {
+        // iteration between 40 inclusive and 48 non-inclusive
+        // hex: #dc493a
+        r = 220;
+        g = 73;
+        b = 58;
+    }
+    else if(count < 7 * regionSize)
+    {
+        // iteration between 48 inclusive and 56 non-inclusive
+        // hex: #62466B
+        r = 98;
+        g = 70;
+        b = 107;
+    }
+    else
+    {
+        // iteration between 56 inclusive and 64 non-inclusive
+        // hex: #FCA17D
+        r = 252;
+        g = 162;
+        b = 125;
     }
 }
 
