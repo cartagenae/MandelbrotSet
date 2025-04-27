@@ -195,7 +195,9 @@ void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
     //     }
     // }
 
-    if(count == MAX_ITER)
+    size_t regionSize = MAX_ITER / 5;
+
+    if(count >= MAX_ITER)
     {
         // iteration 255 inclusive and above
         // hex: #000000
@@ -203,23 +205,33 @@ void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
         g = 0;
         b = 0;
     }
-    else if(count < 51)
+    else if(count < regionSize)
     {
         // iteration less than 51
         // hex: #0d0630
         r = 13;
         g = 6;
         b = 48;
+
+        // hex: #62466B
+        // r = 98;
+        // g = 70;
+        // b = 107;
     }
-    else if(count < 102)
+    else if(count < 2 * regionSize)
     {
         // iteration between 51 inclusive and 102 non-inclusive
         // hex: #18314f
         r = 24;
         g = 49;
         b = 79;
+
+        // hex: #FCA17D
+        // r = 252;
+        // g = 162;
+        // b = 125;
     }
-    else if(count < 153)
+    else if(count < 3 * regionSize)
     {
         // iteration between 102 inclusive and 153 non-inclusive
         // hex: #384e77
@@ -227,7 +239,7 @@ void ComplexPlane::iterationsToRGB(size_t count, Uint8& r, Uint8& g, Uint8& b)
         g = 78;
         b = 119;
     }
-    else if(count < 204)
+    else if(count < 4 * regionSize)
     {
         // iteration between 153 inclusive and 204 non-inclusive
         // hex: #8bbeb2
