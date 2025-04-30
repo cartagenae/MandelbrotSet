@@ -11,16 +11,6 @@ using namespace sf;
 
 int main()
 {
-    // VideoMode desktop = VideoMode::getDesktopMode();
-
-    // int width = desktop.width / 2;
-    // int height = desktop.height / 2;
-
-    // VideoMode desktop(
-    //     VideoMode::getDesktopMode().width,
-    //     VideoMode::getDesktopMode().height
-    // );
-
     VideoMode desktop(
         VideoMode::getDesktopMode().width / 2,
         VideoMode::getDesktopMode().height / 2
@@ -32,11 +22,6 @@ int main()
         window.getSize().x,
         window.getSize().y
     );
-
-    // ComplexPlane mandelbrotPlane(
-    //     window.getSize().x / 2,
-    //     window.getSize().y / 2
-    // );
 
     Font font;
 
